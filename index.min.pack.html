@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>...</title>
+		<meta charset="utf-8">
+    <style>
+      html, body { margin: 0; padding: 0; border: 0; }
+      #c { display: block; } /* kill scrollbars from hell */
+    </style>
+	</head>
+	<body>
+		<canvas height="635" style="width: 1366px; height: 635px;" width="1366" id="c"></canvas>
+		<script>
+			var a = document.getElementsByTagName('canvas')[0];
+			var b = document.body;
+      var d = function(e){ return function(){ e.parentNode.removeChild(e); }; }(a);
+      // unprefix some popular vendor prefixed things (but stick to their original name)
+      var AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+      var requestAnimationFrame =
+        window.requestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(f){ setInterval(f, 1000/30); };
+      // stretch canvas to screen size (once, wont onresize!)
+      a.style.width = (a.width = innerWidth) + 'px';
+      a.style.height = (a.height = innerHeight) + 'px';
+
+      var c = a.getContext('2d');
+		</script>
+<script>
+_='W=a.width;H=a.height;h=1E3;s=H/h;R=[]i<h;+)=R[h]=61;d=[20$K081,80ZI5OO19KK02,9DZZ45O7X,9,8X6IDI4QK$8,9U,8$$2K2I$DK7D3K23UD40];e=[160OO1O8QQIZZQ$80X0X3UU2$20I3$X3I,8X2,9QZ6X3D79,83I6Q0Q$UUUO5K];~r=6~x=~y=9N;J=Y3~G=32;S=;^scale(s,sontouchstart=onmousedownE?(r=6x=y=95J=Y3G=32,S=):(B=1,V=J)};FEN";Rect(W/s,H/s9"_D	+L),+4)_D()_E3	980-Lq,+4q_,h(000"z=Y<V?d:e;v=x,w=y-=V)i<z.length;=2)@v+=z[i],w+=z[1](B-40<V(V-=GB!E(S+=24E4<S(S-=4E4)Bk++;!B`E`k%40`(C++5<rr--if(N>y`9N<y`!((S+140)%800)BY<k(y<N`y>2N))E=1;fff";^font="bold Y0px Arial";BText(C,W/s/2NsetTimeout(F,r)};F(),-@40*ijrandom()|^fill,1Y0*R[jfloor(S/800)+]+1;^beginPath(	)2E3>i;+)i%?_0,Style="#4R[i],4,7;for(i=~^moveTo(,2_00*,32);=function(){&&,67k=B=E=C=V=20$3@^lineTo(D,0I,5K5L4*):(N50O8Q9U1XY10Z,6^c._-S`||j*Math.q(+3))~0;i+';for(Y in $='~qj`_^ZYXUQONLKID@$	')with(_.split($[Y]))_=join(pop());eval(_)
+</script>
+	
+
+</body></html>
