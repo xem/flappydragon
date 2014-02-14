@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>JS1k, [COMPO] demo submission [ID]</title>
+		<meta charset="utf-8">
+    <style>
+      html, body { margin: 0; padding: 0; border: 0; }
+      #c { display: block; } /* kill scrollbars from hell */
+    </style>
+	</head>
+	<body>
+		<canvas height="635" style="width: 1366px; height: 635px;" width="1366" id="c"></canvas>
+		<script>
+			var a = document.getElementsByTagName('canvas')[0];
+			var b = document.body;
+      var d = function(e){ return function(){ e.parentNode.removeChild(e); }; }(a);
+      // unprefix some popular vendor prefixed things (but stick to their original name)
+      var AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+      var requestAnimationFrame =
+        window.requestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(f){ setInterval(f, 1000/30); };
+      // stretch canvas to screen size (once, wont onresize!)
+      a.style.width = (a.width = innerWidth) + 'px';
+      a.style.height = (a.height = innerHeight) + 'px';
+
+      var c = a.getContext('2d');
+		</script>
+		<script>
+// Canvas background
+a.style.background = "#E50";
+
+// Canvas size
+W = a.width;
+H = a.height;
+
+// Math
+M = Math;
+
+// Game has begun / ended
+B = 0;
+E = 0;
+
+// Walls randomness
+w = [];
+for(i = 0; i < 999; i++){
+  w[i] = M.random() * 10 | 1;
+}
+
+// Dragon position (on a 700px high canvas)
+x = 200;
+y = 650;
+
+// Dragon shape
+s = [[20, 0], [0, -6], [-4, -7], [-6, -1], [-3, -4], [-1, -5], [-4, 4], [-10, -10], [0, 8], [-11, -1], [3, 8], [-10, 1], [6, 5], [0, 5], [-4, 1], [-8, -8], [-11, -29], [-5, -5], [-10, 12], [9, 0], [-4, 7], [6, 2], [-2, 6], [-24, -25], [-8, 17], [7, -1], [-1, 7], [9, 2], [-2, 8], [7, -1], [0, 6], [5, 0], [-2, 5], [-14, -2], [-4, -9], [-5, 3], [-7, -3], [0, 8], [-7, 2], [9, 4], [11, 8], [-4, 4], [-4, -3], [-3, 3], [3, 2], [-2, 2], [3, 1], [0, 2], [3, 1], [2, -4], [7, -4], [7, 2], [-1, 4], [-5, -2], [-6, 1], [3, 3], [2, 0], [0, 2], [-2, 3], [5, -1], [1, 3], [2, -3], [3, 1], [0, -5], [4, -4], [17, 0], [13, -5], [12, -6], [10, 3], [11, 0], [14, -7], [-20, -6]];
+
+// Dragon vertical speed and gravity
+V = 0;
+G = 2;
+onclick = function(){
+  B = 1;
+  V += 20;
+}
+
+// Loop
+k = 0;
+I = setInterval(
+  function(){
+    
+    // Reset screen
+    a.width = W;
+    
+    // Limit to 100 loops
+    k++;
+    console.log(1);
+    if(k > 100){
+      clearInterval(I);
+    }
+    
+    // Scale the canvas as if it was 700px high
+    c.save();
+    c.scale(H / 700, H / 700);
+    
+    // Draw dragon
+    c.fillStyle = "#000";
+    c.beginPath();
+    /*
+    c.moveTo(v = x, w = (y = y - V));
+    for(i = 0; i < s.length; i++){
+      c.lineTo((v += s[i][0]),(w += s[i][1]));
+    }
+    */
+    c.closePath();
+    c.fill();
+    
+    // Decrease dragon's vertical speed
+    if(B){
+      V -= G;
+    }
+    
+    c.restore();
+    
+    // Draw walls
+    c.fillStyle = "#920";
+    c.beginPath();
+    c.moveTo(0,0);
+    c.lineTo(0, w[0]);
+    for(i = 0; i < 999; i++){
+      if(i % 15){
+        c.lineTo(i * 20, 10 + w[i]);
+      }
+      else{
+        if(w[i] < 3){
+          w[i] = 3;
+        }
+        if(w[i] > 8){
+          w[i] = 8;
+        }
+        c.lineTo(i * 20, (H / 10) * (w[i] - 2));
+      }
+    }
+    c.lineTo(i*20, 0);
+    c.lineTo(0, 0);
+    c.closePath();
+    c.fill();
+    
+    c.beginPath();
+    c.moveTo(0, H);
+    c.lineTo(0, H - w[0]);
+    for(i = 0; i < 999; i++){
+      if(i % 15){
+        c.lineTo(i * 20, H - 10 - w[i]);
+      }
+      else{
+        c.lineTo(i * 20, (H / 10) * (w[i] + 1));
+      }
+    }
+    c.lineTo(i*20, H);
+    c.lineTo(0, H);
+    c.closePath();
+    c.fill();
+    
+  },50
+);
+		</script>
+	
+
+</body></html>
