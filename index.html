@@ -30,207 +30,128 @@
 
       var c = a.getContext('2d');
 		</script>
-		<script>
+<script>
+// Variables
+// a: the canvas
+// b: the body
+// c: the canvas's 2d context
+// d: (reused) game has started (0/1)
+// e: game has ended (0/1)
+// f: score
+// g: the random map
+// h: dragon's vertical speed
+// i, j: dragon's coordinates x, y
+// k: steps already passed (1 step = 20px)
+// l: the game's framerate
+// n: the game's loop function
+// o: loop var
+// p: dragon's drawing path
+// v, w, y, z: temp vars
 
-/** MY CODE **/
+// Initialization
+c.scale(a.height/1E3,a.height/1E3);
 
-// Initializations:
-// Canvas size (1000px, scaled)
-W = a.width;
-H = a.height;
-h = 1000;
+// Reset
+d=e=f=h=0;
+g=[];
+for(o=0;o<1E3;o++)
+  g[o]=g[o+1E3]=8*Math.random()|1-1;
+i=j=300;
+k=20;
+l=50;
 
-// Canvas scale (height compared to 1000px)
-s = H / h;
-
-// Walls randomness (0-10)
-R = [];
-for(i = 0; i < h; i++){
-  R[i] = R[i + h] = ~~(Math.random() * 6) + 1;
-}
-
-// Dragon shape (temp)
-d = "fgieeecg9efnejgfgegiejffififdbgdgcehieigkdmgqqojqmmppjlmqiqipgphoeldqgnkgleojnkhkekcnfqgnjhnejfmimrepfthwirmnnjqjolnpoiodiesdhhbeiefmekbh8ec9gepcsercmbo9lcj";
-e = "knrjsfimhlmioihnblqnqmnjeq3kiopslmjoejceejhsiuekegdafab89cgakaodf5dafbfagsjtpommepcngskqjn5ihohqisfkcdaacca9dceae7g5i9pirnvjjemgmdj9ja";
-u = "mmuikekqoinfjgnpoinfkglrqmnkglajeldohp78fhdifdcddhbe8c8deeegjmknokmijonkoililrmlnjmihojommpl7i4i4g7abdbccbh9h7gaie";
+// Controls (click/tap)
+ontouchstart=onmousedown=function(){
+  
+  // If game is over, reset
+  if(e){
+    d=e=f=h=0;
+    g=[];
+    for(o=0;o<1E3;o++)
+      g[o]=g[o+1E3]=8*Math.random()|1-1;
+    i=j=300;
+    k=20;
+    l=50;
+  }
+  
+  // If game is not over, start the game if it's not started, and jump
+  else{
+    h=45;
+    d=1;
+  }
+};
 
 // Game loop
-k = 0;
+(n=function(){
 
-// Game state (begin / ended / score / framerate)
-B = E = C = 0;
-r = 60;
-
-// Dragon position
-x = 200;
-y = 950;
-
-// Dragon vertical speed, jump size (random) and gravity (random)
-V = 0;
-J = Math.random() * 10 | 0 + 30;
-G = Math.random() * 3 | 0 + 2;
-
-// Scene scrolling (px)
-S = 20;
-
-// Click/tap to:
-// - Start
-// - Increase the dragon's vertical speed
-// - Reset
-ontouchstart = onmousedown = function(){
-
-  // Reset
-  if(E){
-    k = B = E = C = 0;
-    r = 60;
-    x = 200;
-    y = 950;
-    V = 0;
-    J = Math.random() * 10 | 0 + 30;
-    G = Math.random() * 3 | 0 + 2;
-    S = 20;
+  // Background
+  c.fillStyle="#E50";
+  c.fillRect(0,0,4E4,4E4);
+  
+  // Walls
+  c.fillStyle="#920";
+  
+  // Roof
+  c.beginPath();
+  c.moveTo(-k,0);
+  for(o=2E3;o--;)
+    o%20
+    ?
+    c.lineTo(40*o-k,20+4*g[o])
+    :
+    (c.lineTo(40*o-k,100*g[o]),c.lineTo(40*o-k-4,100*g[o]));
+  c.lineTo(40*o-k,0);
+  c.fill();
+  
+  // Ceiling
+  c.beginPath();
+  c.moveTo(-k,2E3);
+  for(o=2E3;o--;)
+    o%20
+    ?
+    c.lineTo(40*o-k,980-4*g[o])
+    :
+    (c.lineTo(40*o-k,100*(g[o]+3)),c.lineTo(40*o-k-4,100*(g[o]+3)));
+  c.lineTo(40*o-k,1E3);
+  c.fill();
+  
+  // Dragon
+  p="fEFf&{{~_=,;=vviJ.jfVi/.OoyizyhkhEwf74)\n$fwwuvtU`"+(10<h?"iZ[*)yj:*im**y|Ktdww54#5Dy\iz[Kzi[Jiijk[e@1!":"zl]LfU{\lKtBUh{zzU66iigig5\n&iiyz{vfwwiyDfwiiE");
+  c.fillStyle="#000";
+  c.beginPath();
+  c.moveTo(v=i-e,w=(j-=h)-e);
+  for(o in p){
+    y=8-2*(p.charCodeAt(o)>>4);
+    z=16-2*(p.charCodeAt(o)&15);
+    c.lineTo(v+=(e?y:z),w+=(e?-z:y));
   }
+  c.fill();
   
-  // Start / Jump
-  else{
-    B = 1;
-    V = J;
-  }
-}
-F = function(){
-
-  // Draw background
-  c.fillStyle = "#E50";
-  c.fillRect(0, 0, W, H);
-
-  // Scale the canvas as if it was 1000px high
-  c.save();
-  c.scale(s, s);
+  // Apply gravity if the game has started
+  d&&(h-=6);
   
-    // Up wall
-    c.fillStyle = "#920";
-    c.beginPath();
-    c.moveTo(-S, 0);
-    for(i = 0; i < 2000; i++){
-
-      // random height every 40px
-      if(i % 20){
-        c.lineTo(i * 40 - S, 20 + 4 * R[i]);
-      }
-      
-      // random obstacle every 20 steps.
-      else{
-        c.lineTo(i * 40 - S, 100 * (R[i]));
-        c.lineTo(i * 40 + 4 - S, 100 * (R[i]));
-      }
-    }
-    c.lineTo(i * 40 - S, 0);
-    c.fill();
-    
-    // Down wall
-    c.beginPath();
-    c.moveTo(-S, 2000);
-    for(i = 0; i < 2000; i++){
-      if(i % 20){
-        c.lineTo(i * 40 - S, 980 - 4 * R[i]);
-      }
-      else{
-        c.lineTo(i * 40 - S, 100 * (R[i] + 3));
-        c.lineTo(i * 40 + 4 - S, 100 * (R[i] + 3));
-      }
-    }
-    c.lineTo(i * 40 - S, 1000);
-    c.fill();
+  // Loop on the map if we are far enough
+  d&&!e&&(k+=20,4E4<k&&(k-=4E4));
   
-    // Draw dragon
-    c.fillStyle = "#000";
-    c.beginPath();
-    z = d + (V > 10 ? u : e);
-    c.moveTo(v = x, w = (y = y - V));
-    for(i = 0; i < z.length; i += 2){
-      c.lineTo((v += -parseInt(z[i],36)+18),(w += -parseInt(z[i + 1],36)+18));
-    }
-    c.fill();
-    
-    // If the game has started, fall
-    if(B){
-      if(V > -40){
-        V -= G;
-      }
-    }
-    
-    // If the game is started and not over, scroll
-    if(B && !E){
-      S += 20;
-      if(S > 40000){
-        S-= 40000;
-      }
-    }
-    
-    // Count loops
-    if(B){
-      k++;
-    }
-    
-    // Increase score and speed every 40 loops
-    if(B && !E && !(k % 40)){
-      C++;
-      if(r > 15){
-        r--;
-      }
-    }
-    
-    // Game over
-    if(
-      // Too high
-      y < 50
-      
-      ||
-      
-      // Too low
-      y > 950
-      
-      ||
-      
-      // Didn't pass between obstacles
-      (!((S + 140) % 800) && B && k > 10 && (y < R[Math.floor(S/800) * 20 + 20] * 100 + 50 || y > R[Math.floor(S/800) * 20 + 20] * 100 + 250))
-    ){
-      E = 1;
-    }
-    
-    // Text
-    c.fillStyle = "#fff";
-    c.font = "bold 100px 'Century Gothic', Arial";
-    
-    if(E || !B){
-    
-      // Game over
-      if(E){
-        c.fillText("GAME OVER", W / 2 / s - 300, 400);
-        c.fillText("SCORE: " + C, W / 2 / s - 200, 500);
-        c.fillText("Restart", W / 2 / s - 150, 600);
-      }
-      
-      // Start
-      if(!B){
-        c.fillText("FLAPPY DRAGON", W / 2 / s - 400, 450);
-        c.fillText("Start", W / 2 / s - 100, 550);
-      }
-    }
-    
-    // Score
-    if(!E && B){
-      c.fillText(C, W / s - 200, 150);
-    }
+  // Increase score and game speed after each obstacle
+  !d||e||(k+280)%800||(f++,20<l&&l--);
   
-  c.restore();
+  // Game over
+  if(50>j||950<j||!((k+300)%800)&&(j<100*g[20*~~(k/800)+20]+50||j>100*g[20*~~(k/800)+20]+250))
+    e=40;
   
-  setTimeout(F, r);
-}
-F();
-
-/** END **/
-		</script>
+  // Text
+  c.fillStyle="#fff";
+  c.font="6em Arial";
+  d&&c.fillText(f,a.width/(a.height/1E3)/2,500);
+  d||c.fillText("Flappy Dragon",a.width/(a.height/1E3)/2-300,500);
+  e&&c.fillText("score",a.width/(a.height/1E3)/2-80,400);
+  c.fillText(e?"restart":!d?"start":"",a.width/(a.height/1E3)/2-100,600);
+  
+  // Loop
+  setTimeout(n,l)
+})()
+</script>
 	
 
 </body></html>
